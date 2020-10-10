@@ -44,26 +44,34 @@ public class SpamPingEvent extends ListenerAdapter {
             return null;
         }
     }
-
-    private void sendMessageToUser(String username, GuildMessageReceivedEvent event, String message) {
-        User userBeingPinged = jda.retrieveUserById(username).complete();
-
-        String finalMessage = String.format(message, userBeingPinged.getAsMention());
-        event.getChannel().sendMessage(finalMessage).complete();
-        
-        try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+    
+    private boolean shouldContinuePinging(String username) {
+    	return pingCount.keySet().contains(username);
     }
 
-    private void incrementPingCount(String username, GuildMessageReceivedEvent event) {
+    private void sendMessageToUser(String username, GuildMessageReceivedEvent event, String message) {
+        if(shouldContinuePinging(username)) {
+	    	User userBeingPinged = jda.retrieveUserById(username).complete();
+	
+	        String finalMessage = String.format(message, userBeingPinged.getAsMention());
+	        event.getChannel().sendMessage(finalMessage).complete();
+	        
+	        try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        }
+    }
+    
+    private void createIncrementPingCount(String username) {
+    	pingCount.put(username, 1);
+    }
+
+    private void incrementPingCount(String username) {
     	if(pingCount.keySet().contains(username)) {
     		int pings = pingCount.get(username) + 1;
             pingCount.put(username, pings);
-    	} else {
-    		pingCount.put(username, 1);
     	}
     }
   
@@ -78,11 +86,11 @@ public class SpamPingEvent extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (isBotPingMessage(event) || isUserPingMessage(event)) {
+    	if (isBotPingMessage(event) || isUserPingMessage(event)) {
             String username = getUserName(event);
             if (username != null) {
                 sendMessageToUser(username, event, "%s");
-                incrementPingCount(username, event);
+                incrementPingCount(username);
             }
 
         } else if (isAdminPinging(event)) {
@@ -92,10 +100,11 @@ public class SpamPingEvent extends ListenerAdapter {
                     String username = sanitizeUsername(sentence[2]);
                     String message = "Stopped pinging %s. Pinged " + pingCount.get(username) + " times!";
                     sendMessageToUser(username, event, message);
+                    removeIncrementPingCount(username);
                 } else {
                     String username = sanitizeUsername(sentence[1]);
                     sendMessageToUser(username, event, "Now pinging: %s.");
-                    incrementPingCount(username, event);
+                    createIncrementPingCount(username);;
 
                 }
             } catch (Exception e) {
@@ -103,4 +112,8 @@ public class SpamPingEvent extends ListenerAdapter {
             }
         }
     }
+
+	private void removeIncrementPingCount(String username) {
+		pingCount.remove(username);
+	}
 }
