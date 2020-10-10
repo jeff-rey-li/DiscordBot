@@ -2,6 +2,9 @@ package li.jeffrey.events.mod;
 
 import java.util.List;
 
+import li.jeffrey.util.RoleFinder;
+import li.jeffrey.util.UserDetermination;
+import li.jeffrey.util.UsernameSanitizer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -10,51 +13,46 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ChatModEvent extends ListenerAdapter {
 
-    private JDA jda;
     private String prefix;
-    private String myID;
 
     public ChatModEvent(JDA jda, String prefix, String myID) {
-        this.jda = jda;
         this.prefix = prefix;
-        this.myID = myID;
+    }
+    
+    private boolean isAdminMuting(GuildMessageReceivedEvent event) {
+    	return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "mute");
+    }
+    
+    private boolean isAdminUnmuting(GuildMessageReceivedEvent event) {
+    	return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "unmute");
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (!event.getMessage().getContentRaw().startsWith(prefix))
-            return;
-        if (event.getAuthor().getId().equals(myID)) {
-            String[] msg = event.getMessage().getContentRaw().split(" ");
-            if (msg[0].equals("!mute")) {
-                msg[1] = msg[1].replaceAll("[<>/@!]", "");
-                Member member = event.getGuild().retrieveMemberById(msg[1]).complete();
-                List<Role> muteRoleNames = event.getGuild().getRolesByName("Muted", true);
-                Role muted = null;
-                for (Role i : muteRoleNames) {
-                    if (i.getName().toLowerCase().equals("muted")) {
-                        muted = i;
-                        break;
-                    }
-                }
-                event.getGuild().addRoleToMember(member, muted).complete();
-                event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").complete();
-            }
-            if (msg[0].equals("!unmute")) {
-                msg[1] = msg[1].replaceAll("[<>/@!]", "");
-                Member member = event.getGuild().retrieveMemberById(msg[1]).complete();
-                List<Role> muteRoleNames = event.getGuild().getRolesByName("Muted", true);
-                Role muted = null;
-                for (Role i : muteRoleNames) {
-                    if (i.getName().toLowerCase().equals("muted")) {
-                        muted = i;
-                        break;
-                    }
-                }
-                event.getGuild().removeRoleFromMember(member, muted).complete();
-                event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
-            }
-        }
+    	if(isAdminMuting(event)) {
+    		String[] message = event.getMessage().getContentRaw().split(" ");
+    		String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
+    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event, "Muted");
+    		addRoleToUserAndNotifyUser(event, role, username);
+    	} else if(isAdminUnmuting(event)) {
+    		String[] message = event.getMessage().getContentRaw().split(" ");
+    		String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
+    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event, "Muted");
+    		removeRoleToUserAndNotifyUser(event, role, username);
+    	}
     }
+
+	private void addRoleToUserAndNotifyUser(GuildMessageReceivedEvent event, Role role, String username) {
+		Member member = event.getGuild().retrieveMemberById(username).complete();
+		event.getGuild().addRoleToMember(member, role).complete();
+        event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").complete();
+	}
+	
+	private void removeRoleToUserAndNotifyUser(GuildMessageReceivedEvent event, Role role, String username) {
+		Member member = event.getGuild().retrieveMemberById(username).complete();
+		event.getGuild().removeRoleFromMember(member, role).complete();
+        event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
+
+	}
 
 }
