@@ -104,8 +104,7 @@ public class SpamPingEvent extends ListenerAdapter {
                 } else {
                     String username = sanitizeUsername(sentence[1]);
                     sendMessageToUser(username, event, "Now pinging: %s.");
-                    createIncrementPingCount(username);;
-
+                    createIncrementPingCount(username);
                 }
             } catch (Exception e) {
                 return;
