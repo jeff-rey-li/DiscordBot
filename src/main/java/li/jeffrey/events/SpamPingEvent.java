@@ -20,36 +20,36 @@ public class SpamPingEvent extends ListenerAdapter {
         this.prefix = prefix;
         pingCount = new HashMap<String, Integer>();
     }
-    
+
     private boolean isBotPingMessage(GuildMessageReceivedEvent event) {
-    	return event.getAuthor().isBot() && event.getMessage().getContentRaw().startsWith("<");
+        return event.getAuthor().isBot() && event.getMessage().getContentRaw().startsWith("<");
     }
-    
+
     private boolean isUserPingMessage(GuildMessageReceivedEvent event) {
-    	return event.getMessage().getContentRaw().startsWith("Now pinging:");
+        return event.getMessage().getContentRaw().startsWith("Now pinging:");
     }
-    
+
     private String sanitizeUsername(String message) {
-    	return message.replaceAll("[.<>/@!]", "");
+        return message.replaceAll("[.<>/@!]", "");
     }
-    
+
     private String getUserName(GuildMessageReceivedEvent event) {
-    	String[] sentence = event.getMessage().getContentRaw().split(" ");
-    	
-    	if(sentence.length == 1) {
-    		return sanitizeUsername(sentence[0]);
-    	} else if(sentence.length == 3) {
-    		return sanitizeUsername(sentence[2]);
-    	} else {
-    		return null;
-    	}
+        String[] sentence = event.getMessage().getContentRaw().split(" ");
+
+        if (sentence.length == 1) {
+            return sanitizeUsername(sentence[0]);
+        } else if (sentence.length == 3) {
+            return sanitizeUsername(sentence[2]);
+        } else {
+            return null;
+        }
     }
-    
+
     private void sendMessageToUser(String username, GuildMessageReceivedEvent event, String message) {
-    	User userBeingPinged = jda.retrieveUserById(username).complete();
-    	
-    	String finalMessage = String.format(message, userBeingPinged.getAsMention());
-    	event.getChannel().sendMessage(finalMessage).complete();
+        User userBeingPinged = jda.retrieveUserById(username).complete();
+
+        String finalMessage = String.format(message, userBeingPinged.getAsMention());
+        event.getChannel().sendMessage(finalMessage).complete();
     }
 
     private void createPingCounter(String username, GuildMessageReceivedEvent event) {
@@ -57,37 +57,37 @@ public class SpamPingEvent extends ListenerAdapter {
     }
 
     private void incrementPingCount(String username, GuildMessageReceivedEvent event) {
-    	int pings = pingCount.get(username) + 1;
+        int pings = pingCount.get(username) + 1;
         pingCount.put(username, pings);
     }
-    
+
     private boolean isAdminPinging(GuildMessageReceivedEvent event) {
-    	return event.getAuthor().getId().equals(Constants.ADMIN_ID) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
+        return event.getAuthor().getId().equals(Constants.ADMIN_ID) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
     }
-    
+
     private boolean pingingShouldStop(String[] sentence) {
-    	return sentence[1].equals(Constants.STOP);
+        return sentence[1].equals(Constants.STOP);
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (isBotPingMessage(event) || isUserPingMessage(event)) {
             String username = getUserName(event);
-            if(username != null) {
-            	sendMessageToUser(username, event, "%s");
-            	incrementPingCount(username, event);
+            if (username != null) {
+                sendMessageToUser(username, event, "%s");
+                incrementPingCount(username, event);
             }
 
         } else if (isAdminPinging(event)) {
             try {
                 String[] sentence = event.getMessage().getContentRaw().split(" ");
-                if(pingingShouldStop(sentence)) {
-                	String username = sanitizeUsername(sentence[2]);
-                	String message = "Stopped pinging %s. Pinged " + pingCount.get(username) + " times!";
-                	sendMessageToUser(username, event, message);
+                if (pingingShouldStop(sentence)) {
+                    String username = sanitizeUsername(sentence[2]);
+                    String message = "Stopped pinging %s. Pinged " + pingCount.get(username) + " times!";
+                    sendMessageToUser(username, event, message);
                 } else {
-                	String username = sanitizeUsername(sentence[1]);
-                	sendMessageToUser(username, event, "Now pinging: %s.");
+                    String username = sanitizeUsername(sentence[1]);
+                    sendMessageToUser(username, event, "Now pinging: %s.");
                     createPingCounter(username, event);
                 }
             } catch (Exception e) {
