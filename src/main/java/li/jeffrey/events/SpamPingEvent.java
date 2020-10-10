@@ -50,16 +50,23 @@ public class SpamPingEvent extends ListenerAdapter {
 
         String finalMessage = String.format(message, userBeingPinged.getAsMention());
         event.getChannel().sendMessage(finalMessage).complete();
-    }
-
-    private void createPingCounter(String username, GuildMessageReceivedEvent event) {
-        pingCount.put(username, 1);
+        
+        try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
 
     private void incrementPingCount(String username, GuildMessageReceivedEvent event) {
-        int pings = pingCount.get(username) + 1;
-        pingCount.put(username, pings);
+    	if(pingCount.keySet().contains(username)) {
+    		int pings = pingCount.get(username) + 1;
+            pingCount.put(username, pings);
+    	} else {
+    		pingCount.put(username, 1);
+    	}
     }
+  
 
     private boolean isAdminPinging(GuildMessageReceivedEvent event) {
         return event.getAuthor().getId().equals(Constants.ADMIN_ID) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
@@ -88,7 +95,8 @@ public class SpamPingEvent extends ListenerAdapter {
                 } else {
                     String username = sanitizeUsername(sentence[1]);
                     sendMessageToUser(username, event, "Now pinging: %s.");
-                    createPingCounter(username, event);
+                    incrementPingCount(username, event);
+
                 }
             } catch (Exception e) {
                 return;
