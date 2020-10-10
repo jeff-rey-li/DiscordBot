@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import li.jeffrey.constants.Constants;
+import li.jeffrey.util.UserDetermination;
+import li.jeffrey.util.UsernameSanitizer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -29,17 +31,15 @@ public class SpamPingEvent extends ListenerAdapter {
         return event.getMessage().getContentRaw().startsWith("Now pinging:");
     }
 
-    private String sanitizeUsername(String message) {
-        return message.replaceAll("[.<>/@!]", "");
-    }
-
     private String getUserName(GuildMessageReceivedEvent event) {
         String[] sentence = event.getMessage().getContentRaw().split(" ");
 
+        UsernameSanitizer usernameSanitizer = UsernameSanitizer.getInstance();
+        
         if (sentence.length == 1) {
-            return sanitizeUsername(sentence[0]);
+            return usernameSanitizer.sanitizeUsername(sentence[0]);
         } else if (sentence.length == 3) {
-            return sanitizeUsername(sentence[2]);
+            return usernameSanitizer.sanitizeUsername(sentence[2]);
         } else {
             return null;
         }
@@ -77,7 +77,7 @@ public class SpamPingEvent extends ListenerAdapter {
   
 
     private boolean isAdminPinging(GuildMessageReceivedEvent event) {
-        return event.getAuthor().getId().equals(Constants.ADMIN_ID) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
+        return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
     }
 
     private boolean pingingShouldStop(String[] sentence) {
@@ -94,18 +94,19 @@ public class SpamPingEvent extends ListenerAdapter {
             }
 
         } else if (isAdminPinging(event)) {
+        	UsernameSanitizer usernameSanitizer = UsernameSanitizer.getInstance();
+        	
             try {
                 String[] sentence = event.getMessage().getContentRaw().split(" ");
                 if (pingingShouldStop(sentence)) {
-                    String username = sanitizeUsername(sentence[2]);
+                    String username = usernameSanitizer.sanitizeUsername(sentence[2]);
                     String message = "Stopped pinging %s. Pinged " + pingCount.get(username) + " times!";
                     sendMessageToUser(username, event, message);
                     removeIncrementPingCount(username);
                 } else {
-                    String username = sanitizeUsername(sentence[1]);
+                    String username = usernameSanitizer.sanitizeUsername(sentence[1]);
                     sendMessageToUser(username, event, "Now pinging: %s.");
-                    createIncrementPingCount(username);;
-
+                    createIncrementPingCount(username);
                 }
             } catch (Exception e) {
                 return;
