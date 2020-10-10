@@ -20,7 +20,6 @@ public class SpamPingEvent extends ListenerAdapter {
         this.prefix = prefix;
         pingCount = new HashMap<String, Integer>();
     }
-
     
     private boolean isBotPingMessage(GuildMessageReceivedEvent event) {
     	return event.getAuthor().isBot() && event.getMessage().getContentRaw().startsWith("<");
@@ -31,7 +30,7 @@ public class SpamPingEvent extends ListenerAdapter {
     }
     
     private String sanitizeUsername(String message) {
-    	return message.replaceAll("[<>/@!]", "");
+    	return message.replaceAll("[.<>/@!]", "");
     }
     
     private String getUserName(GuildMessageReceivedEvent event) {
@@ -52,7 +51,11 @@ public class SpamPingEvent extends ListenerAdapter {
     	String finalMessage = String.format(message, userBeingPinged.getAsMention());
     	event.getChannel().sendMessage(finalMessage).complete();
     }
-    
+
+    private void createPingCounter(String username, GuildMessageReceivedEvent event) {
+        pingCount.put(username, 1);
+    }
+
     private void incrementPingCount(String username, GuildMessageReceivedEvent event) {
     	int pings = pingCount.get(username) + 1;
         pingCount.put(username, pings);
@@ -62,12 +65,10 @@ public class SpamPingEvent extends ListenerAdapter {
     	return event.getAuthor().getId().equals(Constants.ADMIN_ID) && event.getMessage().getContentRaw().startsWith(prefix + Constants.PING);
     }
     
-    private boolean pingingShouldStop(String [] sentence) {
+    private boolean pingingShouldStop(String[] sentence) {
     	return sentence[1].equals(Constants.STOP);
     }
-    
-    
-    
+
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (isBotPingMessage(event) || isUserPingMessage(event)) {
@@ -87,6 +88,7 @@ public class SpamPingEvent extends ListenerAdapter {
                 } else {
                 	String username = sanitizeUsername(sentence[1]);
                 	sendMessageToUser(username, event, "Now pinging: %s.");
+                    createPingCounter(username, event);
                 }
             } catch (Exception e) {
                 return;
