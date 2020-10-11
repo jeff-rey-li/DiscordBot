@@ -1,7 +1,5 @@
 package li.jeffrey.events.mod;
 
-import java.util.List;
-
 import li.jeffrey.util.RoleFinder;
 import li.jeffrey.util.UserDetermination;
 import li.jeffrey.util.UsernameSanitizer;
@@ -32,12 +30,12 @@ public class ChatModEvent extends ListenerAdapter {
     	if(isAdminMuting(event)) {
     		String[] message = event.getMessage().getContentRaw().split(" ");
     		String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
-    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event, "Muted");
+    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
     		addRoleToUserAndNotifyUser(event, role, username);
     	} else if(isAdminUnmuting(event)) {
     		String[] message = event.getMessage().getContentRaw().split(" ");
     		String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
-    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event, "Muted");
+    		Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
     		removeRoleToUserAndNotifyUser(event, role, username);
     	}
     }
