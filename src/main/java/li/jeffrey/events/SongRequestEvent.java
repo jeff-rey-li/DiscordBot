@@ -11,10 +11,22 @@ public class SongRequestEvent extends ListenerAdapter {
 
     private JDA jda;
     private String prefix;
+    
+    private static final String TITLE = "Song Request";
 
     public SongRequestEvent(JDA jda, String prefix) {
         this.jda = jda;
         this.prefix = prefix;
+    }
+    
+    private void createSongRequest(GuildMessageReceivedEvent event) {
+    	EmbedBuilder eb = new EmbedBuilder().setColor(Color.blue)
+				.setTitle(TITLE)
+				.addField("", event.getMessage().getContentRaw().substring(9).trim(), false)
+				.addField("", "Requested by: " + event.getAuthor().getAsMention(), false);
+
+    	event.getChannel().deleteMessageById(event.getMessageId()).complete();
+    	event.getChannel().sendMessage(eb.build()).complete();
     }
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -22,16 +34,8 @@ public class SongRequestEvent extends ListenerAdapter {
             return;
         }
         if (event.getMessage().getContentRaw().split(" ")[0].equals(prefix + "request")) {
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setColor(Color.BLUE);
-            eb.setTitle("Song Request");
-            eb.addField("", event.getMessage().getContentRaw().substring(9).trim(), false);
-            eb.addField("", "Requested by: " + event.getAuthor().getAsMention(), false);
-            event.getChannel().deleteMessageById(event.getMessageId()).complete();
-            event.getChannel().sendMessage(eb.build()).complete();
-        } else {
-            event.getChannel().deleteMessageById(event.getMessageId()).complete();
+        	createSongRequest(event);
+            
         }
     }
-
 }
