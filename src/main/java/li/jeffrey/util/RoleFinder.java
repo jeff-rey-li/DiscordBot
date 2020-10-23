@@ -2,6 +2,7 @@ package li.jeffrey.util;
 
 import java.util.List;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
@@ -23,21 +24,12 @@ public class RoleFinder {
 		return roleFinder;
 	}
 	
-	public Role getRoleWithNameMember(GenericMessageReactionEvent event, String roleName) {
-	    List<Role> memberRoleNames = event.getGuild().getRolesByName(roleName, true);
+	public Role getRoleWithNameMember(Guild guild, String roleName) {
+	    List<Role> memberRoleNames = guild.getRolesByName(roleName, true);
 	    if(memberRoleNames.size() == 0) {
 	    	return null;
 	    } else {
 	    	return memberRoleNames.get(0);
 	    }
 	}
-	
-	public Role getRoleWithNameMember(GuildMessageReceivedEvent event, String roleName) {
-    	List<Role> memberRoleNames = event.getGuild().getRolesByName(roleName, true);
-    	if(memberRoleNames.size() == 0) {
-    		return null;
-    	} else {
-    		return memberRoleNames.get(0);
-    	}
-    }
 }

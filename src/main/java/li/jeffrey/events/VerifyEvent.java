@@ -21,7 +21,7 @@ public class VerifyEvent extends ListenerAdapter {
 
     public void onGenericMessageReaction(GenericMessageReactionEvent event) {
     	if (shouldAddMemberRole(event)) {
-            Role memberRole = RoleFinder.getInstance().getRoleWithNameMember(event, "Member");
+            Role memberRole = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Member");
             if(memberRole != null) {
             	addRoleToCurrentUserAndRemoveReaction(event, memberRole);
             }

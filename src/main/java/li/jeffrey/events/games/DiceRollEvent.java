@@ -1,23 +1,33 @@
 package li.jeffrey.events.games;
 
+import java.util.Random;
+
+import li.jeffrey.events.ListenerEvent;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class DiceRollEvent extends ListenerAdapter {
-
-    private JDA jda;
-    private String prefix;
-
+public class DiceRollEvent extends ListenerEvent {
     public DiceRollEvent(JDA jda, String prefix) {
-        this.jda = jda;
-        this.prefix = prefix;
+		super(jda, prefix);
+	}
+
+	private String getDiceRoll() {
+    	Random random = new Random();
+    	int diceRollResult = random.nextInt(5) + 1;
+    	
+    	return Integer.toString(diceRollResult);
+
     }
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals(prefix + "diceroll")) {
-            event.getChannel().sendMessage(Integer.toString((int) (Math.random() * 6 + 1))).complete();
-        }
-    }
+	@Override
+	public void doEvent(GenericEvent genericEvent) {
+		((GuildMessageReceivedEvent)genericEvent).getChannel().sendMessage(getDiceRoll()).complete();		
+	}
+
+	@Override
+	public boolean shouldEventTrigger(GenericEvent genericEvent) {
+		return genericEvent instanceof GuildMessageReceivedEvent && ((GuildMessageReceivedEvent)genericEvent).getMessage().getContentRaw().equals(prefix + "diceroll");
+	}
 
 }
