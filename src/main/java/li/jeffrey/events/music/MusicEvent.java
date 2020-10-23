@@ -430,6 +430,8 @@ public class MusicEvent extends ListenerAdapter {
             search = searchPhrase;
         }
 
+        System.out.println(search);
+
         // Load the searched song
         playerManager.loadItem(search, new AudioLoadResultHandler() {
 
@@ -469,43 +471,45 @@ public class MusicEvent extends ListenerAdapter {
                         if (event.getUser().isBot()) {
                             return;
                         }
-                        if (event.retrieveMessage().complete().getEmbeds().get(0).getTitle().equals("Play Song")) {
-                            String reactionEmote = event.getReactionEmote().getName();
-                            String toPlay;
-                            AudioTrack song = null;
-                            switch (reactionEmote) {
-                                case "1️⃣":
+                        if (!event.retrieveMessage().complete().getEmbeds().isEmpty()) {
+                            if (event.retrieveMessage().complete().getEmbeds().get(0).getTitle().equals("Play Song")) {
+                                String reactionEmote = event.getReactionEmote().getName();
+                                String toPlay;
+                                AudioTrack song = null;
+                                switch (reactionEmote) {
+                                    case "1️⃣":
 //                                    song = playlist.getTracks().get(0);
-                                    toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(0).getValue();
-                                    break;
-                                case "2️⃣":
+                                        toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(0).getValue();
+                                        break;
+                                    case "2️⃣":
 //                                    song = playlist.getTracks().get(1);
-                                    toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(1).getValue();
-                                    break;
-                                case "3️⃣":
+                                        toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(1).getValue();
+                                        break;
+                                    case "3️⃣":
 //                                    song = playlist.getTracks().get(2);
-                                    toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(2).getValue();
-                                    break;
-                                case "4️⃣":
+                                        toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(2).getValue();
+                                        break;
+                                    case "4️⃣":
 //                                    song = playlist.getTracks().get(3);
-                                    toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(3).getValue();
-                                    break;
-                                case "5️⃣":
+                                        toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(3).getValue();
+                                        break;
+                                    case "5️⃣":
 //                                    song = playlist.getTracks().get(4);
-                                    toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(4).getValue();
-                                    break;
-                                default:
-                                    return;
-                            }
+                                        toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(4).getValue();
+                                        break;
+                                    default:
+                                        return;
+                                }
 
-                            int indexLink = toPlay.indexOf("https:");
-                            toPlay = toPlay.substring(indexLink);
-                            toPlay = toPlay.substring(0, toPlay.length() - 1);
-                            List<MessageEmbed.Field> fields = event.retrieveMessage().complete().getEmbeds().get(0).getFields();
-                            String userID = fields.get(fields.size() - 1).getValue().replace("Searched by: ", "").replaceAll("[<>/@!]", "").trim();
-                            Member member = event.getGuild().getMemberById(userID);
-                            event.retrieveMessage().complete().delete().complete();
-                            playSong(toPlay, member);
+                                int indexLink = toPlay.indexOf("https:");
+                                toPlay = toPlay.substring(indexLink);
+                                toPlay = toPlay.substring(0, toPlay.length() - 1);
+                                List<MessageEmbed.Field> fields = event.retrieveMessage().complete().getEmbeds().get(0).getFields();
+                                String userID = fields.get(fields.size() - 1).getValue().replace("Searched by: ", "").replaceAll("[<>/@!]", "").trim();
+                                Member member = event.getGuild().getMemberById(userID);
+                                event.retrieveMessage().complete().delete().complete();
+                                playSong(toPlay, member);
+                            }
                         }
                     }
                 }
