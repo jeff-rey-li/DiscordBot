@@ -1,4 +1,4 @@
-package li.jeffrey.events;
+package li.jeffrey.events.structure;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -15,11 +15,4 @@ public abstract class ListenerEvent extends ListenerAdapter{
         this.jda = jda;
         this.prefix = prefix;
     }
-	
-	@Override 
-	public final void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		if(shouldEventTrigger(event)) {
-			doEvent(event);
-		}
-	}
 }
