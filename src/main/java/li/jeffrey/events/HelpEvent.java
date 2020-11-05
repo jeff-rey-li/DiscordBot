@@ -144,8 +144,8 @@ public class HelpEvent extends ListenerAdapter {
     public EmbedBuilder miscHelp() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Miscellaneous Help:").setColor(Color.CYAN);
-        eb.addField("**" + prefix + "wyr \"option 1\"\"option 2\"**",
-                "Creates a Would You Rather with reacts (include \"\" for each option that you would like to add",
+        eb.addField("**" + prefix + "wyr option 1,option 2,option3,...**",
+                "Creates a Would You Rather with reacts (include commas between option that you would like to add",
                 false);
         eb.addField("**" + prefix + "diceroll**",
                 "Rolls a dice (1-6)",

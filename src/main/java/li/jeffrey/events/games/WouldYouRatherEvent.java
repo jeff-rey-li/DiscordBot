@@ -15,7 +15,7 @@ public class WouldYouRatherEvent extends RecievedEventListener {
 		GuildMessageReceivedEvent event = (GuildMessageReceivedEvent)genericEvent;
 		String[] possibleOptions = getPossibleOptionsArray(event);
         for (String option: possibleOptions) {
-        	reactToOptionMessageWithCheckMark(option, event);
+        	reactToOptionMessageWithCheckMark(option.trim(), event);
         }
 	}
 
@@ -25,7 +25,7 @@ public class WouldYouRatherEvent extends RecievedEventListener {
 	}
 	
 	private String[] getPossibleOptionsArray(GuildMessageReceivedEvent event) {
-	    return event.getMessage().getContentRaw().replace(prefix + "wyr", "").trim().split("\"");
+	    return event.getMessage().getContentRaw().replace(prefix + "wyr", "").trim().split(",");
 	}
 	    
 	private void reactToOptionMessageWithCheckMark(String option, GuildMessageReceivedEvent event) {
