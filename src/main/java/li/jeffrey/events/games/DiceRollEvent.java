@@ -2,12 +2,12 @@ package li.jeffrey.events.games;
 
 import java.util.Random;
 
-import li.jeffrey.events.ListenerEvent;
+import li.jeffrey.events.structure.RecievedEventListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class DiceRollEvent extends ListenerEvent {
+public class DiceRollEvent extends RecievedEventListener {
     public DiceRollEvent(JDA jda, String prefix) {
 		super(jda, prefix);
 	}
