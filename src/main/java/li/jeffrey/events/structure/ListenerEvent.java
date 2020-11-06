@@ -1,13 +1,15 @@
 package li.jeffrey.events.structure;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public abstract class ListenerEvent extends ListenerAdapter{
-	public abstract void doEvent(GenericEvent genericEvent);
-	public abstract boolean shouldEventTrigger(GenericEvent genericEvent);
-	
+public abstract class ListenerEvent extends ListenerAdapter {
+    public abstract void doEvent(GenericEvent genericEvent);
+
+    public abstract boolean shouldEventTrigger(GenericEvent genericEvent);
+
     protected JDA jda;
     protected String prefix;
 
