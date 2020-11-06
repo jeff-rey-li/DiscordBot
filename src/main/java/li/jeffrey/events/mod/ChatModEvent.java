@@ -1,6 +1,6 @@
 package li.jeffrey.events.mod;
 
-import li.jeffrey.events.structure.RecievedEventListener;
+import li.jeffrey.events.structure.ReceivedEventListener;
 import li.jeffrey.util.RoleFinder;
 import li.jeffrey.util.UserDetermination;
 import li.jeffrey.util.UsernameSanitizer;
@@ -9,9 +9,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class ChatModEvent extends RecievedEventListener {
+public class ChatModEvent extends ReceivedEventListener {
 
     public ChatModEvent(JDA jda, String prefix) {
         super(jda, prefix);
