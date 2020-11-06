@@ -24,13 +24,13 @@ public class ChatModEvent extends ReceivedEventListener {
         return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "unmute");
     }
 
-    private void addRoleToUserAndNotifyUser(GuildMessageReceivedEvent event, Role role, String username) {
+    private void addRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
         Member member = event.getGuild().retrieveMemberById(username).complete();
         event.getGuild().addRoleToMember(member, role).complete();
         event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").complete();
     }
 
-    private void removeRoleToUserAndNotifyUser(GuildMessageReceivedEvent event, Role role, String username) {
+    private void removeRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
         Member member = event.getGuild().retrieveMemberById(username).complete();
         event.getGuild().removeRoleFromMember(member, role).complete();
         event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
@@ -44,12 +44,12 @@ public class ChatModEvent extends ReceivedEventListener {
             String[] message = event.getMessage().getContentRaw().split(" ");
             String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
             Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
-            addRoleToUserAndNotifyUser(event, role, username);
+            addRoleToUserAndNotifyChannel(event, role, username);
         } else if (isAdminUnmuting(event)) {
             String[] message = event.getMessage().getContentRaw().split(" ");
             String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
             Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
-            removeRoleToUserAndNotifyUser(event, role, username);
+            removeRoleToUserAndNotifyChannel(event, role, username);
         }
     }
 
