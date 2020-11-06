@@ -1,11 +1,11 @@
 package li.jeffrey.events.games;
 
-import li.jeffrey.events.structure.RecievedEventListener;
+import li.jeffrey.events.structure.ReceivedEventListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class WouldYouRatherEvent extends RecievedEventListener {
+public class WouldYouRatherEvent extends ReceivedEventListener {
     public WouldYouRatherEvent(JDA jda, String prefix) {
         super(jda, prefix);
     }
