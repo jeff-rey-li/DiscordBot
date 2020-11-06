@@ -42,9 +42,9 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new VerifyEvent(jda, prefix));
         jda.addEventListener(new SpamPingEvent(jda, prefix));
         jda.addEventListener(new ChatModEvent(jda, prefix));
-        jda.addEventListener(new VoiceModEvent(jda, prefix, myID));
+        jda.addEventListener(new VoiceModEvent(jda, prefix));
         jda.addEventListener(new MusicEvent(jda, prefix));
-        jda.addEventListener(new ServerModEvent(jda, prefix, myID));
+        jda.addEventListener(new ServerModEvent(jda, prefix));
         jda.addEventListener(new HelpEvent(jda, prefix));
         jda.addEventListener(new JoinHomeworkEvent(jda, prefix));
         jda.addEventListener(new SongRequestEvent(jda, prefix));

@@ -75,7 +75,10 @@ public class ServerModEvent extends ReceivedEventListener {
 
     @Override
     public boolean shouldEventTrigger(GenericEvent genericEvent) {
-        return genericEvent instanceof GuildMessageReceivedEvent && (isAdminKicking((GuildMessageReceivedEvent) genericEvent) || isAdminBanning((GuildMessageReceivedEvent) genericEvent) || isAdminUnbanning((GuildMessageReceivedEvent) genericEvent));
+        return genericEvent instanceof GuildMessageReceivedEvent &&
+                (isAdminKicking((GuildMessageReceivedEvent) genericEvent) ||
+                        isAdminBanning((GuildMessageReceivedEvent) genericEvent) ||
+                        isAdminUnbanning((GuildMessageReceivedEvent) genericEvent));
     }
 
 }
