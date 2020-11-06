@@ -430,8 +430,6 @@ public class MusicEvent extends ListenerAdapter {
             search = searchPhrase;
         }
 
-        System.out.println(search);
-
         // Load the searched song
         playerManager.loadItem(search, new AudioLoadResultHandler() {
 
@@ -527,6 +525,7 @@ public class MusicEvent extends ListenerAdapter {
             }
 
             public void loadFailed(FriendlyException exception) {
+                exception.printStackTrace();
                 trackScheduler.sendErrorMessage();
             }
         });
