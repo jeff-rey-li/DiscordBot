@@ -41,7 +41,7 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new Debug(myID, jda));
         jda.addEventListener(new VerifyEvent(jda, prefix));
         jda.addEventListener(new SpamPingEvent(jda, prefix));
-        jda.addEventListener(new ChatModEvent(jda, prefix, myID));
+        jda.addEventListener(new ChatModEvent(jda, prefix));
         jda.addEventListener(new VoiceModEvent(jda, prefix, myID));
         jda.addEventListener(new MusicEvent(jda, prefix));
         jda.addEventListener(new ServerModEvent(jda, prefix, myID));
@@ -50,6 +50,7 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new SongRequestEvent(jda, prefix));
         jda.addEventListener(new DiceRollEvent(jda, prefix));
         jda.addEventListener(new AskQuestionEvent(jda, prefix));
+        jda.addEventListener(new AskQuestionRevealer(jda, prefix));
         jda.addEventListener(new WouldYouRatherEvent(jda, prefix));
     }
 
@@ -73,7 +74,7 @@ public class Bot extends ListenerAdapter {
             event.getChannel().deleteMessageById(event.getMessageId()).complete();
         }
         if (event.getMessage().getContentRaw().equals(prefix + "invite")) {
-            String invite = ""; // Discord Invite Link
+            String invite = "https://discord.gg/u2BjRFF"; // Discord Invite Link
             event.getChannel().sendMessage("Use this link to invite members to the server: " + invite).complete();
         }
         if (event.getMessage().getContentRaw().contains(prefix + "update") && event.getAuthor().getId().equals(myID)) {
