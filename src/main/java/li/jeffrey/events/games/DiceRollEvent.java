@@ -9,25 +9,24 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class DiceRollEvent extends RecievedEventListener {
     public DiceRollEvent(JDA jda, String prefix) {
-		super(jda, prefix);
-	}
-
-	private String getDiceRoll() {
-    	Random random = new Random();
-    	int diceRollResult = random.nextInt(5) + 1;
-    	
-    	return Integer.toString(diceRollResult);
-
+        super(jda, prefix);
     }
 
-	@Override
-	public void doEvent(GenericEvent genericEvent) {
-		((GuildMessageReceivedEvent)genericEvent).getChannel().sendMessage(getDiceRoll()).complete();		
-	}
+    private String getDiceRoll() {
+        Random random = new Random();
+        int diceRollResult = random.nextInt(5) + 1;
 
-	@Override
-	public boolean shouldEventTrigger(GenericEvent genericEvent) {
-		return genericEvent instanceof GuildMessageReceivedEvent && ((GuildMessageReceivedEvent)genericEvent).getMessage().getContentRaw().equals(prefix + "diceroll");
-	}
+        return Integer.toString(diceRollResult);
+    }
+
+    @Override
+    public void doEvent(GenericEvent genericEvent) {
+        ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(getDiceRoll()).complete();
+    }
+
+    @Override
+    public boolean shouldEventTrigger(GenericEvent genericEvent) {
+        return genericEvent instanceof GuildMessageReceivedEvent && ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().equals(prefix + "diceroll");
+    }
 
 }
