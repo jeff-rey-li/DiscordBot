@@ -40,15 +40,12 @@ public class ChatModEvent extends ReceivedEventListener {
     @Override
     public void doEvent(GenericEvent genericEvent) {
         GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
+        String[] message = event.getMessage().getContentRaw().split(" ");
+        String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
+        Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
         if (isAdminMuting(event)) {
-            String[] message = event.getMessage().getContentRaw().split(" ");
-            String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
-            Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
             addRoleToUserAndNotifyChannel(event, role, username);
         } else if (isAdminUnmuting(event)) {
-            String[] message = event.getMessage().getContentRaw().split(" ");
-            String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
-            Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
             removeRoleToUserAndNotifyChannel(event, role, username);
         }
     }
