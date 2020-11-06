@@ -34,7 +34,6 @@ public class ChatModEvent extends ReceivedEventListener {
         Member member = event.getGuild().retrieveMemberById(username).complete();
         event.getGuild().removeRoleFromMember(member, role).complete();
         event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
-
     }
 
     @Override
