@@ -28,7 +28,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
  * @author Jeffrey Li
  */
 public class MusicEvent extends ListenerAdapter {
-
+	/**
     private JDA jda;
     private String prefix;
     private VoiceChannel channel;
@@ -392,12 +392,15 @@ public class MusicEvent extends ListenerAdapter {
 
 
     }
+    
+    **/
 
     /**
      * Joins the specified voice channel
      *
      * @param channel - voice channel to join
      */
+	/*
     private void joinChannel(VoiceChannel channel) {
         this.channel = channel;
         manager = jda.getGuildById("657977250771238912").getAudioManager();
@@ -405,9 +408,7 @@ public class MusicEvent extends ListenerAdapter {
         manager.openAudioConnection(channel);
     }
 
-    /**
-     * Leaves the voice channel and empties the queue
-     */
+
     private void leaveChannel() {
         trackScheduler.emptyQueue();
         player.stopTrack();
@@ -415,12 +416,7 @@ public class MusicEvent extends ListenerAdapter {
         channel = null;
     }
 
-    /**
-     * Searches and plays the top song with the given search phrase
-     *
-     * @param searchPhrase - song to search for
-     * @param addMember    - user that searched the song
-     */
+
     private void playSong(String searchPhrase, Member addMember) {
         String search; // Put the searchPhrase into the correct search format
         if (!searchPhrase.contains("scsearch") && !searchPhrase.contains("www.")
@@ -457,11 +453,11 @@ public class MusicEvent extends ListenerAdapter {
                 }
                 eb.addField("", "Searched by: " + addMember.getAsMention(), false);
                 Message searchResults = textChannel.sendMessage(eb.build()).complete();
-                searchResults.addReaction("1️⃣").complete();
-                searchResults.addReaction("2️⃣").complete();
-                searchResults.addReaction("3️⃣").complete();
-                searchResults.addReaction("4️⃣").complete();
-                searchResults.addReaction("5️⃣").complete();
+                searchResults.addReaction("1ï¸�âƒ£").complete();
+                searchResults.addReaction("2ï¸�âƒ£").complete();
+                searchResults.addReaction("3ï¸�âƒ£").complete();
+                searchResults.addReaction("4ï¸�âƒ£").complete();
+                searchResults.addReaction("5ï¸�âƒ£").complete();
 
 
                 class Reaction extends ListenerAdapter {
@@ -475,23 +471,23 @@ public class MusicEvent extends ListenerAdapter {
                                 String toPlay;
                                 AudioTrack song = null;
                                 switch (reactionEmote) {
-                                    case "1️⃣":
+                                    case "1ï¸�âƒ£":
 //                                    song = playlist.getTracks().get(0);
                                         toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(0).getValue();
                                         break;
-                                    case "2️⃣":
+                                    case "2ï¸�âƒ£":
 //                                    song = playlist.getTracks().get(1);
                                         toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(1).getValue();
                                         break;
-                                    case "3️⃣":
+                                    case "3ï¸�âƒ£":
 //                                    song = playlist.getTracks().get(2);
                                         toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(2).getValue();
                                         break;
-                                    case "4️⃣":
+                                    case "4ï¸�âƒ£":
 //                                    song = playlist.getTracks().get(3);
                                         toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(3).getValue();
                                         break;
-                                    case "5️⃣":
+                                    case "5ï¸�âƒ£":
 //                                    song = playlist.getTracks().get(4);
                                         toPlay = event.retrieveMessage().complete().getEmbeds().get(0).getFields().get(4).getValue();
                                         break;
@@ -531,12 +527,7 @@ public class MusicEvent extends ListenerAdapter {
         });
     }
 
-    /**
-     * Removes a song from queue with given search phrase
-     *
-     * @param toRemove     - song to remove (number in queue or song name)
-     * @param removeMember - user that requested the song to be removed
-     */
+
     private void remove(String toRemove, Member removeMember) {
         List<AudioTrack> queue = trackScheduler.getQueue();
         try { // Remove by number in queue
@@ -563,11 +554,7 @@ public class MusicEvent extends ListenerAdapter {
         }
     }
 
-    /**
-     * Returns the queue as a EmbedBuilder
-     *
-     * @return EmbedBuilder (call build() to display queue)
-     */
+
     private EmbedBuilder queue() {
         List<AudioTrack> queue = trackScheduler.getQueue();
 
@@ -642,12 +629,7 @@ public class MusicEvent extends ListenerAdapter {
         return eb;
     }
 
-    /**
-     * Saves all songs in the queue as a playlist
-     *
-     * @param playlistName - name to identify the playlist
-     * @return true if playlist was saved, false if playlist was not saved
-     */
+
     private boolean savePlaylist(String playlistName) {
         List<AudioTrack> songs = trackScheduler.getQueue();
         if (songs.size() == 0) {
@@ -659,13 +641,7 @@ public class MusicEvent extends ListenerAdapter {
         return true;
     }
 
-    /**
-     * Loads a saved playlist and plays all the songs
-     *
-     * @param playlistName - name of the playlist to load
-     * @param addMember    - user that requested to play the playlist
-     * @return true if playlist was loaded, false if playlist was not found
-     */
+   
     private boolean loadPlayList(String playlistName, Member addMember) {
         List<String> songs = savedPlaylists.get(playlistName);
         if (songs == null) {
@@ -675,12 +651,7 @@ public class MusicEvent extends ListenerAdapter {
         return true;
     }
 
-    /**
-     * Deletes a saved playlist with the given name
-     *
-     * @param playlistName - name of the playlist to delete
-     * @return true if playlist was successfully deleted, false if playlist was not found
-     */
+    
     private boolean deletePlaylist(String playlistName) {
         List<String> deletedPlaylist = savedPlaylists.remove(playlistName);
         if (deletedPlaylist == null) {
@@ -690,37 +661,23 @@ public class MusicEvent extends ListenerAdapter {
         }
     }
 
-    /**
-     * Toggles the repeat function
-     *
-     * @return true if repeat is set to true, false if repeat is set to false
-     */
+   
     private boolean toggleRepeat() {
         return trackScheduler.setRepeat();
     }
 
-    /**
-     * Toggles the pause function
-     *
-     * @return true if pause is set to true, false if pause is set to false
-     */
+    
     private boolean togglePause() {
         player.setPaused(!player.isPaused());
         return player.isPaused();
     }
 
-    /**
-     * Stops the current track which skips to the next track
-     */
+    
     private void skip() {
         player.stopTrack();
     }
 
-    /**
-     * Toggles shuffle and returns result as a EmbedBuilder
-     *
-     * @return EmbedBuilder (call build() to display result)
-     */
+    
     private EmbedBuilder toggleShuffle() {
         boolean shuffle = trackScheduler.toggleShuffle();
         EmbedBuilder eb = new EmbedBuilder();
@@ -736,12 +693,7 @@ public class MusicEvent extends ListenerAdapter {
         return eb;
     }
 
-    /**
-     * Sets the volume of the bot and returns result as a EmbedBuilder
-     *
-     * @param volume - Volume to set the bot (1-200)
-     * @return EmbedBuilder (call build() to display result)
-     */
+    
     private EmbedBuilder setVolume(int volume) {
         player.setVolume(volume);
         EmbedBuilder eb = new EmbedBuilder();
@@ -757,10 +709,7 @@ public class MusicEvent extends ListenerAdapter {
         return eb;
     }
 
-    /**
-     * Checks if no user is left in the voice channel and if so, starts a 30 second
-     * timer to leave the voice channel
-     */
+    
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         if (event.getChannelLeft() != null && manager != null && manager.getConnectedChannel() != null) {
@@ -775,12 +724,7 @@ public class MusicEvent extends ListenerAdapter {
         }
     }
 
-    /**
-     * Checks if there are any users left in the voice channel and if not, leaves
-     * the voice channel
-     *
-     * @author Jeffrey Li
-     */
+    
     class NoUserDisconnect extends TimerTask {
         public void run() {
             if (manager.getConnectedChannel().getMembers().size() == 1) {
@@ -795,5 +739,7 @@ public class MusicEvent extends ListenerAdapter {
         }
 
     }
+    
+    */
 
 }

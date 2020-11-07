@@ -64,6 +64,10 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new AskQuestionRevealer(jda, prefix));
         jda.addEventListener(new WouldYouRatherEvent(jda, prefix));
     }
+    
+    public static JDA getJda() {
+    	return jda;
+    }
 
     public static void updatePrefix(String newPrefix) {
         prefix = newPrefix;

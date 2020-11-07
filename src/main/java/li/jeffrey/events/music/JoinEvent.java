@@ -1,6 +1,7 @@
 package li.jeffrey.events.music;
 
 import li.jeffrey.events.structure.ReceivedEventListener;
+import li.jeffrey.util.MusicCommonUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -20,16 +21,8 @@ public class JoinEvent extends ReceivedEventListener {
         return event.getMessage().getContentRaw().startsWith(prefix + "join");
     }
 
-    private boolean isBotAlreadyConnectedToVoiceChannel() {
-        return !(MusicPlayer.getAudioManager().getConnectedChannel() == null);
-    }
-
-    private VoiceChannel getMemberConnectedVoiceChannel(Member member) {
-        return member.getVoiceState().getChannel();
-    }
-
-    private boolean isMemberConnectedToChannel(Member member) {
-        return !(getMemberConnectedVoiceChannel(member) == null);
+    private boolean isMemberNotConnectedToChannel(Member member) {
+        return MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(member) == null;
     }
 
     private void sendUserMustConnectToVoiceChannelMessage(GuildMessageReceivedEvent event) {
@@ -52,7 +45,7 @@ public class JoinEvent extends ReceivedEventListener {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.YELLOW);
         eb.setTitle("Joined Voice Channel:");
-        eb.setDescription(getMemberConnectedVoiceChannel(event.getMember()).getName());
+        eb.setDescription(MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember()).getName());
         eb.setFooter("Made by Jeffrey Li");
         event.getChannel().sendMessage(eb.build()).queue();
     }
@@ -64,16 +57,17 @@ public class JoinEvent extends ReceivedEventListener {
 
     @Override
     public void doEvent(GenericEvent genericEvent) {
-        if (!isMemberConnectedToChannel(((GuildMessageReceivedEvent) genericEvent).getMember())) {
-            sendUserMustConnectToVoiceChannelMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
+    	GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
+        if (isMemberNotConnectedToChannel(event.getMember())) {
+            sendUserMustConnectToVoiceChannelMessage(event);
         }
-        if (isBotAlreadyConnectedToVoiceChannel()) {
-            sendMusicBotAlreadyConnectedMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
+        else if (MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
+            sendMusicBotAlreadyConnectedMessage(event);
+        } else {
+        	VoiceChannel voiceChannel = MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember());
+        	joinVoiceChannel(voiceChannel);
+        	sendBotJoinedChannelMessage(event);
         }
-        joinVoiceChannel(getMemberConnectedVoiceChannel(((GuildMessageReceivedEvent) genericEvent).getMember()));
-        sendBotJoinedChannelMessage((GuildMessageReceivedEvent) genericEvent);
     }
 
     @Override

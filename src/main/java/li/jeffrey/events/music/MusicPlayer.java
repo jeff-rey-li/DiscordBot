@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.managers.AudioManager;
 
 public class MusicPlayer {
 
-    private static AudioManager manager = Bot.getJDA().getGuildById(Constants.GUILD_ID).getAudioManager();
+    private static AudioManager manager = Bot.getJda().getGuildById(Constants.GUILD_ID).getAudioManager();
     private static AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-    private static TrackScheduler trackScheduler = new TrackScheduler(Bot.getJDA());
+    private static TrackScheduler trackScheduler = new TrackScheduler(Bot.getJda());
     private static AudioPlayer player = playerManager.createPlayer();
     private static AudioSendHandler myHandler = new AudioPlayerSendHandler(player);
 

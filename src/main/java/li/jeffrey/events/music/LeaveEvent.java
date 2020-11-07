@@ -1,6 +1,7 @@
 package li.jeffrey.events.music;
 
 import li.jeffrey.events.structure.ReceivedEventListener;
+import li.jeffrey.util.MusicCommonUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -20,16 +21,8 @@ public class LeaveEvent extends ReceivedEventListener {
         return event.getMessage().getContentRaw().startsWith(prefix + "leave");
     }
 
-    private boolean isBotAlreadyConnectedToVoiceChannel() {
-        return !(MusicPlayer.getAudioManager().getConnectedChannel() == null);
-    }
-
-    private VoiceChannel getMemberConnectedVoiceChannel(Member member) {
-        return member.getVoiceState().getChannel();
-    }
-
-    private boolean isMemberConnectedToChannelSameChannel(Member member) {
-        return MusicPlayer.getAudioManager().getConnectedChannel().equals(getMemberConnectedVoiceChannel(member));
+    private boolean isMemberConnectedToSameChannel(Member member) {
+        return MusicPlayer.getAudioManager().getConnectedChannel().equals(MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(member));
     }
 
     private void sendMusicBotNotConnectedMessage(GuildMessageReceivedEvent event) {
@@ -54,15 +47,14 @@ public class LeaveEvent extends ReceivedEventListener {
 
     @Override
     public void doEvent(GenericEvent genericEvent) {
-        if (!isBotAlreadyConnectedToVoiceChannel()) {
-            sendMusicBotNotConnectedMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
+    	GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
+        if (!MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
+            sendMusicBotNotConnectedMessage(event);
+        } else if (!isMemberConnectedToSameChannel(event.getMember())) {
+            sendUserNotConnectedToSameChannelMessage(event);
+        } else {
+        	leaveVoiceChannel();
         }
-        if (!isMemberConnectedToChannelSameChannel(((GuildMessageReceivedEvent) genericEvent).getMember())) {
-            sendUserNotConnectedToSameChannelMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
-        }
-        leaveVoiceChannel();
     }
 
     @Override
