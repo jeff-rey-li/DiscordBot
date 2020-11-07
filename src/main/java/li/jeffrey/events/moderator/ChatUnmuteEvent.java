@@ -21,9 +21,9 @@ public class ChatUnmuteEvent extends ReceivedEventListener {
     }
 
     private void removeMutedRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
-        event.getGuild().removeRoleFromMember(member, role).complete();
-        event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
+        event.getGuild().removeRoleFromMember(member, role).queue();
+        event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").queue();
     }
 
     @Override

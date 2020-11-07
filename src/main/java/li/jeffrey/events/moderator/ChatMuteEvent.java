@@ -21,9 +21,9 @@ public class ChatMuteEvent extends ReceivedEventListener {
     }
 
     private void addMutedRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
-        event.getGuild().addRoleToMember(member, role).complete();
-        event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
+        event.getGuild().addRoleToMember(member, role).queue();
+        event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").queue();
     }
 
     @Override

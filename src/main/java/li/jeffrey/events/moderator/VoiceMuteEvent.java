@@ -19,9 +19,9 @@ public class VoiceMuteEvent extends ReceivedEventListener {
     }
 
     private void voiceMuteUserAndNotifyChannel(GuildMessageReceivedEvent event, String username) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
-        member.mute(true).complete();
-        event.getChannel().sendMessage("Voice muted " + member.getAsMention() + "!").complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
+        member.mute(true).queue();
+        event.getChannel().sendMessage("Voice muted " + member.getAsMention() + "!").queue();
     }
 
     @Override

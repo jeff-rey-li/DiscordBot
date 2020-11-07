@@ -19,9 +19,9 @@ public class DeafenEvent extends ReceivedEventListener {
     }
 
     private void deafenUserAndNotifyChannel(GuildMessageReceivedEvent event, String username) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
-        member.deafen(true).complete();
-        event.getChannel().sendMessage("Deafened " + member.getAsMention() + "!").complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
+        member.deafen(true).queue();
+        event.getChannel().sendMessage("Deafened " + member.getAsMention() + "!").queue();
     }
 
     @Override
