@@ -19,13 +19,13 @@ public class BanEvent extends ReceivedEventListener {
     }
 
     private void banUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
         if (reason.isEmpty()) {
-            event.getChannel().sendMessage(member.getAsMention() + " has been banned! Reason: No reason given.").complete();
-            member.ban(0).complete();
+            event.getChannel().sendMessage(member.getAsMention() + " has been banned! Reason: No reason given.").queue();
+            member.ban(0).queue();
         } else {
-            event.getChannel().sendMessage(member.getAsMention() + " has been banned! Reason: " + reason + ".").complete();
-            member.ban(0, reason).complete();
+            event.getChannel().sendMessage(member.getAsMention() + " has been banned! Reason: " + reason + ".").queue();
+            member.ban(0, reason).queue();
         }
     }
 

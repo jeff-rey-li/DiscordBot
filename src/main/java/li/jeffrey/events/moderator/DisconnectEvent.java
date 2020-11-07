@@ -19,9 +19,9 @@ public class DisconnectEvent extends ReceivedEventListener {
     }
 
     private void disconnectUserAndNotifyChannel(GuildMessageReceivedEvent event, String username) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
         if (member.getVoiceState().inVoiceChannel()) {
-            event.getGuild().kickVoiceMember(member).complete();
+            event.getGuild().kickVoiceMember(member).queue();
         }
     }
 

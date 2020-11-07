@@ -23,9 +23,9 @@ public class UnlockChannelEvent extends ReceivedEventListener {
     private void unlockVoiceChannelAndNotifyChannel(GuildMessageReceivedEvent event) {
         Member member = event.getGuild().getMemberById(event.getAuthor().getId());
         Role role = event.getGuild().getRoleById(Constants.EVERYONE_ROLE_ID);
-        member.getVoiceState().getChannel().putPermissionOverride(role).complete();
-        member.getVoiceState().getChannel().getPermissionOverride(role).getManager().grant(Permission.VOICE_CONNECT).complete();
-        event.getChannel().sendMessage("The voice channel __" + member.getVoiceState().getChannel().getName() + "__ " + "has been unlocked.").complete();
+        member.getVoiceState().getChannel().putPermissionOverride(role).queue();
+        member.getVoiceState().getChannel().getPermissionOverride(role).getManager().grant(Permission.VOICE_CONNECT).queue();
+        event.getChannel().sendMessage("The voice channel __" + member.getVoiceState().getChannel().getName() + "__ " + "has been unlocked.").queue();
     }
 
     @Override

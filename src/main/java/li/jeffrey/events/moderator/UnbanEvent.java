@@ -21,11 +21,11 @@ public class UnbanEvent extends ReceivedEventListener {
     private void unbanToUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
         User user = jda.getUserById(username);
         if (reason.isEmpty()) {
-            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: No reason given.").complete();
+            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: No reason given.").queue();
         } else {
-            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: " + reason + ".").complete();
+            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: " + reason + ".").queue();
         }
-        event.getGuild().unban(user).complete();
+        event.getGuild().unban(user).queue();
     }
 
     @Override

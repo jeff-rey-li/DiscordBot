@@ -19,13 +19,13 @@ public class KickMemberEvent extends ReceivedEventListener {
     }
 
     private void kickUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
+        Member member = event.getGuild().getMemberById(event.getAuthor().getId());
         if (reason.isEmpty()) {
-            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: No reason given.").complete();
+            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: No reason given.").queue();
         } else {
-            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: " + reason + ".").complete();
+            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: " + reason + ".").queue();
         }
-        member.kick(reason).complete();
+        member.kick(reason).queue();
     }
 
     @Override
