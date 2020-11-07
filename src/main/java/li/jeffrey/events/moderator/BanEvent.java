@@ -19,10 +19,6 @@ public class BanEvent extends ReceivedEventListener {
         return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "ban");
     }
 
-    private boolean isAdminUnbanning(GuildMessageReceivedEvent event) {
-        return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "unban");
-    }
-
     private void banUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
         Member member = event.getGuild().retrieveMemberById(username).complete();
         if (reason.isEmpty()) {
@@ -34,31 +30,17 @@ public class BanEvent extends ReceivedEventListener {
         }
     }
 
-    private void unbanToUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
-        User user = jda.getUserById(username);
-        if (reason.isEmpty()) {
-            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: No reason given.").complete();
-        } else {
-            event.getChannel().sendMessage(user.getAsMention() + " has been unbanned! Reason: " + reason + ".").complete();
-        }
-        event.getGuild().unban(user).complete();
-    }
-
     @Override
     public void doEvent(GenericEvent genericEvent) {
         GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
         String[] message = event.getMessage().getContentRaw().split(" ");
         String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
         String reason = event.getMessage().getContentRaw().replace(message[0], "").replace(message[1], "").trim();
-        if (isAdminBanning(event)) {
-            banUserAndNotifyChannel(event, username, reason);
-        } else if (isAdminUnbanning(event)) {
-            unbanToUserAndNotifyChannel(event, username, reason);
-        }
+        banUserAndNotifyChannel(event, username, reason);
     }
 
     @Override
     public boolean shouldEventTrigger(GenericEvent genericEvent) {
-        return genericEvent instanceof GuildMessageReceivedEvent && (isAdminBanning((GuildMessageReceivedEvent) genericEvent) || isAdminUnbanning((GuildMessageReceivedEvent) genericEvent));
+        return genericEvent instanceof GuildMessageReceivedEvent && isAdminBanning((GuildMessageReceivedEvent) genericEvent);
     }
 }

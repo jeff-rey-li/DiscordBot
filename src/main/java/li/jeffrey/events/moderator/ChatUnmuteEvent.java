@@ -10,20 +10,20 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class ChatMuteEvent extends ReceivedEventListener {
+public class ChatUnmuteEvent extends ReceivedEventListener {
 
-    public ChatMuteEvent(JDA jda, String prefix) {
+    public ChatUnmuteEvent(JDA jda, String prefix) {
         super(jda, prefix);
     }
 
-    private boolean isAdminMuting(GuildMessageReceivedEvent event) {
-        return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "mute");
+    private boolean isAdminUnmuting(GuildMessageReceivedEvent event) {
+        return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "unmute");
     }
 
-    private void addMutedRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
+    private void removeMutedRoleToUserAndNotifyChannel(GuildMessageReceivedEvent event, Role role, String username) {
         Member member = event.getGuild().retrieveMemberById(username).complete();
-        event.getGuild().addRoleToMember(member, role).complete();
-        event.getChannel().sendMessage("Muted " + member.getAsMention() + "!").complete();
+        event.getGuild().removeRoleFromMember(member, role).complete();
+        event.getChannel().sendMessage("Unmuted " + member.getAsMention() + "!").complete();
     }
 
     @Override
@@ -32,11 +32,11 @@ public class ChatMuteEvent extends ReceivedEventListener {
         String[] message = event.getMessage().getContentRaw().split(" ");
         String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
         Role role = RoleFinder.getInstance().getRoleWithNameMember(event.getGuild(), "Muted");
-        addMutedRoleToUserAndNotifyChannel(event, role, username);
+        removeMutedRoleToUserAndNotifyChannel(event, role, username);
     }
 
     @Override
     public boolean shouldEventTrigger(GenericEvent genericEvent) {
-        return genericEvent instanceof GuildMessageReceivedEvent && isAdminMuting((GuildMessageReceivedEvent) genericEvent);
+        return genericEvent instanceof GuildMessageReceivedEvent && isAdminUnmuting((GuildMessageReceivedEvent) genericEvent);
     }
 }

@@ -29,13 +29,8 @@ public class DisconnectEvent extends ReceivedEventListener {
     public void doEvent(GenericEvent genericEvent) {
         GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
         String[] message = event.getMessage().getContentRaw().split(" ");
-        String username = "";
-        if (message.length > 1) {
-            username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
-        }
-        if (isAdminDisconnecting(event)) {
-            disconnectUserAndNotifyChannel(event, username);
-        }
+        String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
+        disconnectUserAndNotifyChannel(event, username);
     }
 
     @Override

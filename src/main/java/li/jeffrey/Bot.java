@@ -44,11 +44,16 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new SpamPingEvent(jda, prefix));
         jda.addEventListener(new BanEvent(jda, prefix));
         jda.addEventListener(new ChatMuteEvent(jda, prefix));
+        jda.addEventListener(new ChatUnmuteEvent(jda, prefix));
         jda.addEventListener(new DeafenEvent(jda, prefix));
         jda.addEventListener(new DisconnectEvent(jda, prefix));
         jda.addEventListener(new KickMemberEvent(jda, prefix));
         jda.addEventListener(new LockChannelEvent(jda, prefix));
+        jda.addEventListener(new UnbanEvent(jda, prefix));
+        jda.addEventListener(new UndeafenEvent(jda, prefix));
+        jda.addEventListener(new UnlockChannelEvent(jda, prefix));
         jda.addEventListener(new VoiceMuteEvent(jda, prefix));
+        jda.addEventListener(new VoiceUnmuteEvent(jda, prefix));
         jda.addEventListener(new MusicEvent(jda, prefix));
         jda.addEventListener(new KickMemberEvent(jda, prefix));
         jda.addEventListener(new HelpEvent(jda, prefix));
