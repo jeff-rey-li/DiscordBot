@@ -1,4 +1,4 @@
-package li.jeffrey.events.mod;
+package li.jeffrey.events.moderator;
 
 import li.jeffrey.events.structure.ReceivedEventListener;
 import li.jeffrey.util.UserDetermination;
@@ -9,14 +9,10 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class ServerModEvent extends ReceivedEventListener {
+public class BanEvent extends ReceivedEventListener {
 
-    public ServerModEvent(JDA jda, String prefix) {
+    public BanEvent(JDA jda, String prefix) {
         super(jda, prefix);
-    }
-
-    private boolean isAdminKicking(GuildMessageReceivedEvent event) {
-        return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "kick");
     }
 
     private boolean isAdminBanning(GuildMessageReceivedEvent event) {
@@ -25,16 +21,6 @@ public class ServerModEvent extends ReceivedEventListener {
 
     private boolean isAdminUnbanning(GuildMessageReceivedEvent event) {
         return UserDetermination.getInstance().isAdmin(event) && event.getMessage().getContentRaw().startsWith(prefix + "unban");
-    }
-
-    private void kickUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
-        Member member = event.getGuild().retrieveMemberById(username).complete();
-        if (reason.isEmpty()) {
-            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: No reason given.").complete();
-        } else {
-            event.getChannel().sendMessage(member.getAsMention() + " has been kicked! Reason: " + reason + ".").complete();
-        }
-        member.kick(reason).complete();
     }
 
     private void banUserAndNotifyChannel(GuildMessageReceivedEvent event, String username, String reason) {
@@ -64,9 +50,7 @@ public class ServerModEvent extends ReceivedEventListener {
         String[] message = event.getMessage().getContentRaw().split(" ");
         String username = UsernameSanitizer.getInstance().sanitizeUsername(message[1]);
         String reason = event.getMessage().getContentRaw().replace(message[0], "").replace(message[1], "").trim();
-        if (isAdminKicking(event)) {
-            kickUserAndNotifyChannel(event, username, reason);
-        } else if (isAdminBanning(event)) {
+        if (isAdminBanning(event)) {
             banUserAndNotifyChannel(event, username, reason);
         } else if (isAdminUnbanning(event)) {
             unbanToUserAndNotifyChannel(event, username, reason);
@@ -75,10 +59,6 @@ public class ServerModEvent extends ReceivedEventListener {
 
     @Override
     public boolean shouldEventTrigger(GenericEvent genericEvent) {
-        return genericEvent instanceof GuildMessageReceivedEvent &&
-                (isAdminKicking((GuildMessageReceivedEvent) genericEvent) ||
-                        isAdminBanning((GuildMessageReceivedEvent) genericEvent) ||
-                        isAdminUnbanning((GuildMessageReceivedEvent) genericEvent));
+        return genericEvent instanceof GuildMessageReceivedEvent && (isAdminBanning((GuildMessageReceivedEvent) genericEvent) || isAdminUnbanning((GuildMessageReceivedEvent) genericEvent));
     }
-
 }
