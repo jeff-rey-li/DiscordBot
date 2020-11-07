@@ -1,4 +1,4 @@
-package li.jeffrey.events.mod;
+package li.jeffrey.events.moderator;
 
 import li.jeffrey.events.structure.ReceivedEventListener;
 import li.jeffrey.util.RoleFinder;
@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-public class ChatModEvent extends ReceivedEventListener {
+public class ChatMuteEvent extends ReceivedEventListener {
 
-    public ChatModEvent(JDA jda, String prefix) {
+    public ChatMuteEvent(JDA jda, String prefix) {
         super(jda, prefix);
     }
 

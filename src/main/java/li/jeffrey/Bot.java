@@ -5,7 +5,8 @@ import java.util.List;
 import li.jeffrey.events.*;
 import li.jeffrey.events.games.*;
 import li.jeffrey.events.games.paranoia.*;
-import li.jeffrey.events.mod.*;
+import li.jeffrey.events.moderator.*;
+import li.jeffrey.events.moderator.ChatMuteEvent;
 import li.jeffrey.events.music.*;
 
 import net.dv8tion.jda.api.JDA;
@@ -41,10 +42,15 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new Debug(myID, jda));
         jda.addEventListener(new VerifyEvent(jda, prefix));
         jda.addEventListener(new SpamPingEvent(jda, prefix));
-        jda.addEventListener(new ChatModEvent(jda, prefix));
-        jda.addEventListener(new VoiceModEvent(jda, prefix, myID));
+        jda.addEventListener(new BanEvent(jda, prefix));
+        jda.addEventListener(new ChatMuteEvent(jda, prefix));
+        jda.addEventListener(new DeafenEvent(jda, prefix));
+        jda.addEventListener(new DisconnectEvent(jda, prefix));
+        jda.addEventListener(new KickMemberEvent(jda, prefix));
+        jda.addEventListener(new LockChannelEvent(jda, prefix));
+        jda.addEventListener(new VoiceMuteEvent(jda, prefix));
         jda.addEventListener(new MusicEvent(jda, prefix));
-        jda.addEventListener(new ServerModEvent(jda, prefix, myID));
+        jda.addEventListener(new KickMemberEvent(jda, prefix));
         jda.addEventListener(new HelpEvent(jda, prefix));
         jda.addEventListener(new JoinHomeworkEvent(jda, prefix));
         jda.addEventListener(new SongRequestEvent(jda, prefix));
