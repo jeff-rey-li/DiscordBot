@@ -5,7 +5,6 @@ import li.jeffrey.util.UserDetermination;
 import li.jeffrey.util.UsernameSanitizer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
