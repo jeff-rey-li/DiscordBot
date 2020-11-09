@@ -54,7 +54,7 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new UnlockChannelEvent(jda, prefix));
         jda.addEventListener(new VoiceMuteEvent(jda, prefix));
         jda.addEventListener(new VoiceUnmuteEvent(jda, prefix));
-        jda.addEventListener(new MusicEvent(jda, prefix));
+//        jda.addEventListener(new MusicEvent(jda, prefix));
         jda.addEventListener(new KickMemberEvent(jda, prefix));
         jda.addEventListener(new HelpEvent(jda, prefix));
         jda.addEventListener(new JoinHomeworkEvent(jda, prefix));
@@ -63,6 +63,10 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new AskQuestionEvent(jda, prefix));
         jda.addEventListener(new AskQuestionRevealer(jda, prefix));
         jda.addEventListener(new WouldYouRatherEvent(jda, prefix));
+
+        jda.addEventListener(new JoinEvent(jda, prefix));
+        jda.addEventListener(new LeaveEvent(jda, prefix));
+        jda.addEventListener(new PlaySongEvent(jda, prefix));
     }
     
     public static JDA getJda() {

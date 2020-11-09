@@ -21,52 +21,18 @@ public class JoinEvent extends ReceivedEventListener {
         return event.getMessage().getContentRaw().startsWith(prefix + "join");
     }
 
-    private boolean isMemberNotConnectedToChannel(Member member) {
-        return MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(member) == null;
-    }
-
-    private void sendUserMustConnectToVoiceChannelMessage(GuildMessageReceivedEvent event) {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(Color.RED);
-        eb.setDescription("You must be in a channel to play music!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
-    }
-
-    private void sendMusicBotAlreadyConnectedMessage(GuildMessageReceivedEvent event) {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(Color.RED);
-        eb.setDescription("I'm already connected to a channel!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
-    }
-
-    private void sendBotJoinedChannelMessage(GuildMessageReceivedEvent event) {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(Color.YELLOW);
-        eb.setTitle("Joined Voice Channel:");
-        eb.setDescription(MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember()).getName());
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
-    }
-
-    private void joinVoiceChannel(VoiceChannel channel) {
-        MusicPlayer.getAudioManager().setSendingHandler(MusicPlayer.getMyHandler());
-        MusicPlayer.getAudioManager().openAudioConnection(channel);
-    }
-
     @Override
     public void doEvent(GenericEvent genericEvent) {
     	GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
-        if (isMemberNotConnectedToChannel(event.getMember())) {
-            sendUserMustConnectToVoiceChannelMessage(event);
+        if (MusicCommonUtil.getInstance().isMemberNotConnectedToChannel(event.getMember())) {
+            MusicCommonUtil.getInstance().sendUserMustConnectToVoiceChannelMessage(event);
         }
         else if (MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
-            sendMusicBotAlreadyConnectedMessage(event);
+            MusicCommonUtil.getInstance().sendMusicBotAlreadyConnectedMessage(event);
         } else {
         	VoiceChannel voiceChannel = MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember());
-        	joinVoiceChannel(voiceChannel);
-        	sendBotJoinedChannelMessage(event);
+        	MusicCommonUtil.getInstance().joinVoiceChannel(voiceChannel);
+            MusicCommonUtil.getInstance().sendBotJoinedChannelMessage(event);
         }
     }
 
