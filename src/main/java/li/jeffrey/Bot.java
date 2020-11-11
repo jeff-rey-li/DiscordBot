@@ -67,6 +67,7 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new JoinEvent(jda, prefix));
         jda.addEventListener(new LeaveEvent(jda, prefix));
         jda.addEventListener(new PlaySongEvent(jda, prefix));
+        jda.addEventListener(new SongChoiceListener(jda, prefix));
     }
     
     public static JDA getJda() {

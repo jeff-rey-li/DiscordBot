@@ -87,13 +87,13 @@ public class PlaySongEvent extends ReceivedEventListener {
 
     private void sendSongOptionsMessage(EmbedBuilder eb, GuildMessageReceivedEvent event) {
         RestAction<Message> optionMessage = event.getChannel().sendMessage(eb.build());
-        Consumer<Message> addReactionsToMessage = (message -> {
+        Consumer<Message> addReactionsToMessage = message -> {
             message.addReaction("1️⃣").queue();
             message.addReaction("2️⃣").queue();
             message.addReaction("3️⃣").queue();
             message.addReaction("4️⃣").queue();
             message.addReaction("5️⃣").queue();
-        });
+        };
         optionMessage.queue(addReactionsToMessage);
     }
 
