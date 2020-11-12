@@ -21,7 +21,7 @@ public class WouldYouRatherEvent extends ReceivedEventListener {
 
 	@Override
 	public boolean shouldEventTrigger(GenericEvent genericEvent) {
-		return ((GuildMessageReceivedEvent)genericEvent).getMessage().getContentRaw().contains(prefix + "wyr");
+		return genericEvent instanceof GuildMessageReceivedEvent && ((GuildMessageReceivedEvent)genericEvent).getMessage().getContentRaw().contains(prefix + "wyr");
 	}
 	
 	private String[] getPossibleOptionsArray(GuildMessageReceivedEvent event) {

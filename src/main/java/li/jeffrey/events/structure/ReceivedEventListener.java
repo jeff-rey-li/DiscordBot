@@ -1,7 +1,7 @@
 package li.jeffrey.events.structure;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.GenericEvent;
 
 public abstract class ReceivedEventListener extends ListenerEvent {
     public ReceivedEventListener(JDA jda, String prefix) {
@@ -9,7 +9,7 @@ public abstract class ReceivedEventListener extends ListenerEvent {
     }
 
     @Override
-    public final void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public final void onGenericEvent(GenericEvent event) {
         if (shouldEventTrigger(event)) {
             doEvent(event);
         }
