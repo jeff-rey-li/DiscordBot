@@ -61,7 +61,8 @@ public class TrackScheduler extends AudioEventAdapter {
     private void playNextSong(AudioTrack lastTrack) {
         SongAddData nextSong = SongQueue.getInstance().getNextSong(lastTrack);
         if (nextSong != null) {
-            MusicPlayer.getInstance().playSong(nextSong.getSong().makeClone(), nextSong.getMemberAdded(), lastBotMessageChannel);
+            MusicPlayer.getInstance().playSong(nextSong.getSong().makeClone(), nextSong.getMemberAdded(),
+                    lastBotMessageChannel);
         }
     }
 

@@ -37,8 +37,8 @@ public class GetQueueEvent extends ReceivedEventListener {
         String hourString = (totalHours < 10) ? "0" + totalHours : Integer.toString(totalHours);
         String minuteString = (totalMinutes < 10) ? "0" + totalMinutes : Integer.toString(totalMinutes);
         String secondString = (totalSeconds < 10) ? "0" + totalSeconds : Integer.toString(totalSeconds);
-        String totalTime = (totalHours > 0) ? hourString + ":" + minuteString + ":" + secondString
-                : minuteString + ":" + secondString;
+        String totalTime = (totalHours > 0) ? hourString + ":" + minuteString + ":" + secondString : minuteString +
+                ":" + secondString;
         return totalTime;
     }
 
@@ -62,11 +62,9 @@ public class GetQueueEvent extends ReceivedEventListener {
                 songName = songName.substring(0, 56) + " ...";
             }
             if (MusicPlayer.getInstance().getPlayer().getPlayingTrack().getInfo().title.equals(song.getInfo().title)) {
-                queueList += "\n:arrow_right: " + (i + 1) + ". [" + songName + "](" + song.getInfo().uri + ")" + " *"
-                        + minuteString + ":" + secondString + "*";
+                queueList += "\n:arrow_right: " + (i + 1) + ". [" + songName + "](" + song.getInfo().uri + ")" + " *" + minuteString + ":" + secondString + "*";
             } else {
-                queueList += "\n" + (i + 1) + ". [" + songName + "](" + song.getInfo().uri + ")" + " *" + minuteString + ":"
-                        + secondString + "*";
+                queueList += "\n" + (i + 1) + ". [" + songName + "](" + song.getInfo().uri + ")" + " *" + minuteString + ":" + secondString + "*";
             }
         }
         String totalTime = calculateQueueLength(queue);
@@ -101,9 +99,11 @@ public class GetQueueEvent extends ReceivedEventListener {
         int numMessagesNeeded = (int) Math.ceil(queue.size() / 5.0);
         for (int i = 0; i < numMessagesNeeded; i++) {
             if (i != numMessagesNeeded - 1) {
-                ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(createQueueMessage(queue, i * 5, (i + 1) * 5).build()).queue();
+                ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(createQueueMessage(queue, i * 5,
+                        (i + 1) * 5).build()).queue();
             } else {
-                ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(createQueueMessage(queue, i * 5, queue.size()).build()).queue();
+                ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(createQueueMessage(queue, i * 5,
+                        queue.size()).build()).queue();
             }
         }
     }

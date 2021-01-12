@@ -34,7 +34,8 @@ public class ToggleRepeatEvent extends ReceivedEventListener {
             sendRepeatTurnedOnMessage((GuildMessageReceivedEvent) genericEvent);
             if (MusicPlayer.getInstance().getPlayer().getPlayingTrack() == null && !SongQueue.getInstance().isQueueEmpty()) {
                 SongAddData playNext = SongQueue.getInstance().getSongAtIndex(0);
-                MusicPlayer.getInstance().playSong(playNext.getSong().makeClone(), playNext.getMemberAdded(), ((GuildMessageReceivedEvent) genericEvent).getChannel());
+                MusicPlayer.getInstance().playSong(playNext.getSong().makeClone(), playNext.getMemberAdded(),
+                        ((GuildMessageReceivedEvent) genericEvent).getChannel());
             }
         } else {
             sendRepeatTurnedOffMessage((GuildMessageReceivedEvent) genericEvent);

@@ -33,11 +33,14 @@ public class ToggleShuffleEvent extends ReceivedEventListener {
         if (MusicPlayer.getInstance().toggleIsShuffle()) {
             SongAddData firstSong = SongQueue.getInstance().shuffleQueue(MusicPlayer.getInstance().getNowPlaying());
             sendShuffleTurnedOnMessage((GuildMessageReceivedEvent) genericEvent);
-            MusicPlayer.getInstance().playSong(firstSong.getSong().makeClone(), firstSong.getMemberAdded(), ((GuildMessageReceivedEvent) genericEvent).getChannel());
+            MusicPlayer.getInstance().playSong(firstSong.getSong().makeClone(), firstSong.getMemberAdded(),
+                    ((GuildMessageReceivedEvent) genericEvent).getChannel());
         } else {
-            SongAddData firstSong = SongQueue.getInstance().deleteShuffleQueue(MusicPlayer.getInstance().getNowPlaying());
+            SongAddData firstSong =
+                    SongQueue.getInstance().deleteShuffleQueue(MusicPlayer.getInstance().getNowPlaying());
             sendShuffleTurnedOffMessage((GuildMessageReceivedEvent) genericEvent);
-            MusicPlayer.getInstance().playSong(firstSong.getSong().makeClone(), firstSong.getMemberAdded(), ((GuildMessageReceivedEvent) genericEvent).getChannel());
+            MusicPlayer.getInstance().playSong(firstSong.getSong().makeClone(), firstSong.getMemberAdded(),
+                    ((GuildMessageReceivedEvent) genericEvent).getChannel());
         }
     }
 

@@ -23,9 +23,13 @@ public class SongAddData {
         return memberAdded;
     }
 
-    public int getLastQueueIndexWhenRemoved() { return lastQueueIndexWhenRemoved; }
+    public int getLastQueueIndexWhenRemoved() {
+        return lastQueueIndexWhenRemoved;
+    }
 
-    public void setLastQueueIndexWhenRemoved(int indexOfSongWhenRemoved) { lastQueueIndexWhenRemoved = indexOfSongWhenRemoved; }
+    public void setLastQueueIndexWhenRemoved(int indexOfSongWhenRemoved) {
+        lastQueueIndexWhenRemoved = indexOfSongWhenRemoved;
+    }
 
     public void cloneSongAfterFinish() {
         song = song.makeClone();

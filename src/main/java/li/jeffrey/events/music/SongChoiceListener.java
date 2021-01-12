@@ -39,7 +39,8 @@ public class SongChoiceListener extends ReceivedEventListener {
             public void trackLoaded(AudioTrack audioTrack) {
                 boolean success = SongQueue.getInstance().addSong(audioTrack, memberRequestingSong);
                 if (success) {
-                    MusicCommonUtil.getInstance().sendNewSongQueuedMessage(audioTrack, memberRequestingSong, notificationChannel);
+                    MusicCommonUtil.getInstance().sendNewSongQueuedMessage(audioTrack, memberRequestingSong,
+                            notificationChannel);
                     if (MusicPlayer.getInstance().getPlayer().getPlayingTrack() == null) {
                         MusicPlayer.getInstance().playSong(audioTrack, memberRequestingSong, notificationChannel);
                     }

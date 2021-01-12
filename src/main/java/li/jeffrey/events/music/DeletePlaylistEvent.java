@@ -1,6 +1,5 @@
 package li.jeffrey.events.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import li.jeffrey.events.structure.ReceivedEventListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;

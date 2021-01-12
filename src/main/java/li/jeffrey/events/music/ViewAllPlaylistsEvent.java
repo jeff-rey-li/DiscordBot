@@ -36,7 +36,8 @@ public class ViewAllPlaylistsEvent extends ReceivedEventListener {
         eb.setDescription(playlists + "\n---");
         eb.addField("To save a playlist, type", prefix + "saveplaylist " + "[new playlist name]", false);
         eb.addField("To view a playlist, type", prefix + "viewplaylist " + "[playlist name] (case sensitive)", false);
-        eb.addField("To delete a playlist, type", prefix + "deleteplaylist " + "[playlist name] (case sensitive)", false);
+        eb.addField("To delete a playlist, type", prefix + "deleteplaylist " + "[playlist name] (case sensitive)",
+                false);
         eb.addField("To load a playlist, type", prefix + "loadplaylist " + "[playlist name] (case sensitive)", false);
         ((GuildMessageReceivedEvent) genericEvent).getChannel().sendMessage(eb.build()).queue();
     }

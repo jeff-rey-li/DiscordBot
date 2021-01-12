@@ -10,12 +10,10 @@ import java.util.List;
 public class SongQueue {
 
     private static SongQueue songQueue;
-//    private boolean isShuffle;
     private List<SongAddData> queue;
     private List<SongAddData> shuffledQueue;
 
     private SongQueue() {
-//        isShuffle = false;
         queue = new ArrayList<SongAddData>();
         shuffledQueue = new ArrayList<SongAddData>();
     }
