@@ -8,7 +8,9 @@ import li.jeffrey.events.structure.ReceivedEventListener;
 import li.jeffrey.util.MusicCommonUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -24,7 +26,8 @@ public class PlaySongEvent extends ReceivedEventListener {
     }
 
     private boolean isUserPlayingSong(GuildMessageReceivedEvent event) {
-        return event.getMessage().getContentRaw().startsWith(prefix + "play");
+
+        return event.getMessage().getContentRaw().trim().split(" ")[0].equals(prefix + "play");
     }
 
     private String determineSearchWebsite(String searchPhrase) {
@@ -34,16 +37,25 @@ public class PlaySongEvent extends ReceivedEventListener {
         return searchPhrase;
     }
 
-    private void searchSongOnline(String searchPhrase, GuildMessageReceivedEvent event) {
+    private void searchSongOnline(String searchPhrase, Member memberRequestingSong, TextChannel notificationChannel) {
         MusicPlayer.getInstance().getPlayerManager().loadItem(searchPhrase, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                playSong(audioTrack, event);
+                boolean success = SongQueue.getInstance().addSong(audioTrack, memberRequestingSong);
+                if (success) {
+                    MusicCommonUtil.getInstance().sendNewSongQueuedMessage(audioTrack, memberRequestingSong, notificationChannel);
+                    if (MusicPlayer.getInstance().getPlayer().getPlayingTrack() == null) {
+                        MusicPlayer.getInstance().playSong(audioTrack, memberRequestingSong, notificationChannel);
+                    }
+                } else {
+                    // TODO: tell user that song is in queue already
+                    MusicCommonUtil.getInstance().sendSongAlreadyInQueueMessage(audioTrack, notificationChannel);
+                }
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
-                createSongOptionsMessage(audioPlaylist, event);
+                createSongOptionsMessage(searchPhrase.replace("ytsearch:", ""), audioPlaylist, memberRequestingSong, notificationChannel);
             }
 
             @Override
@@ -58,15 +70,7 @@ public class PlaySongEvent extends ReceivedEventListener {
         });
     }
 
-    private void playSong(AudioTrack song, GuildMessageReceivedEvent event) {
-        MusicPlayer.getInstance().getTrackScheduler().addSong(song, event.getMember());
-        if (MusicPlayer.getInstance().getPlayer().getPlayingTrack() == null) {
-            MusicPlayer.getInstance().getPlayer().playTrack(song);
-            MusicPlayer.getInstance().getPlayer().setPaused(false);
-        }
-    }
-
-    private void createSongOptionsMessage(AudioPlaylist songOptions, GuildMessageReceivedEvent event) {
+    private void createSongOptionsMessage(String searchPhrase, AudioPlaylist songOptions, Member memberRequestingSong, TextChannel notificationChannel) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Play Song");
         eb.setColor(Color.BLUE);
@@ -75,18 +79,17 @@ public class PlaySongEvent extends ReceivedEventListener {
             String title = song.getInfo().title;
             String url = song.getInfo().uri;
             if (i == 0) {
-                eb.addField("Search Results:", "1. [" + title + "](" + url + ")", false);
+                eb.addField("Search results:", "1. [" + title + "](" + url + ")", false);
             } else {
                 eb.addField("", (i + 1) + ". [" + title + "](" + url + ")", false);
             }
         }
-        eb.addField("Added by:", event.getMember().getAsMention(), false);
-        eb.setFooter("Made by Jeffrey Li");
-        sendSongOptionsMessage(eb, event);
+        eb.addField("Searched by:", memberRequestingSong.getAsMention(), false);
+        sendSongOptionsMessage(eb, notificationChannel);
     }
 
-    private void sendSongOptionsMessage(EmbedBuilder eb, GuildMessageReceivedEvent event) {
-        RestAction<Message> optionMessage = event.getChannel().sendMessage(eb.build());
+    private void sendSongOptionsMessage(EmbedBuilder eb, TextChannel notificationChannel) {
+        RestAction<Message> optionMessage = notificationChannel.sendMessage(eb.build());
         Consumer<Message> addReactionsToMessage = message -> {
             message.addReaction("1️⃣").queue();
             message.addReaction("2️⃣").queue();
@@ -101,18 +104,18 @@ public class PlaySongEvent extends ReceivedEventListener {
     public void doEvent(GenericEvent genericEvent) {
         GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
         if (MusicCommonUtil.getInstance().isMemberNotConnectedToChannel(event.getMember())) {
-            MusicCommonUtil.getInstance().sendUserMustConnectToVoiceChannelMessage(event);
+            MusicCommonUtil.getInstance().sendUserMustConnectToVoiceChannelMessage(event.getChannel());
             return;
         } else if (!MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
             VoiceChannel voiceChannel = MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember());
             MusicCommonUtil.getInstance().joinVoiceChannel(voiceChannel);
-            MusicCommonUtil.getInstance().sendBotJoinedChannelMessage(event);
+            MusicCommonUtil.getInstance().sendBotJoinedChannelMessage(event.getChannel(), event.getMember());
         } else if (!MusicCommonUtil.getInstance().isMemberConnectedToSameChannel(event.getMember())){
-            MusicCommonUtil.getInstance().sendUserNotConnectedToSameChannelMessage(event);
+            MusicCommonUtil.getInstance().sendUserNotConnectedToSameChannelMessage(event.getChannel());
             return;
         }
         String songSearch = determineSearchWebsite(event.getMessage().getContentRaw().replace(prefix + "play", "").trim());
-        searchSongOnline(songSearch, event);
+        searchSongOnline(songSearch, event.getMember(), event.getChannel());
     }
 
     @Override

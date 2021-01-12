@@ -25,14 +25,14 @@ public class JoinEvent extends ReceivedEventListener {
     public void doEvent(GenericEvent genericEvent) {
     	GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
         if (MusicCommonUtil.getInstance().isMemberNotConnectedToChannel(event.getMember())) {
-            MusicCommonUtil.getInstance().sendUserMustConnectToVoiceChannelMessage(event);
+            MusicCommonUtil.getInstance().sendUserMustConnectToVoiceChannelMessage(event.getChannel());
         }
         else if (MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
-            MusicCommonUtil.getInstance().sendMusicBotAlreadyConnectedMessage(event);
+            MusicCommonUtil.getInstance().sendMusicBotAlreadyConnectedMessage(event.getChannel());
         } else {
         	VoiceChannel voiceChannel = MusicCommonUtil.getInstance().getMemberConnectedVoiceChannel(event.getMember());
         	MusicCommonUtil.getInstance().joinVoiceChannel(voiceChannel);
-            MusicCommonUtil.getInstance().sendBotJoinedChannelMessage(event);
+            MusicCommonUtil.getInstance().sendBotJoinedChannelMessage(event.getChannel(), event.getMember());
         }
     }
 
