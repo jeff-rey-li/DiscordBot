@@ -45,7 +45,6 @@ public class SongChoiceListener extends ReceivedEventListener {
                         MusicPlayer.getInstance().playSong(audioTrack, memberRequestingSong, notificationChannel);
                     }
                 } else {
-                    // TODO: tell user that song is in queue already
                     MusicCommonUtil.getInstance().sendSongAlreadyInQueueMessage(audioTrack, notificationChannel);
                 }
             }
