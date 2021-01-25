@@ -24,13 +24,15 @@ public class LeaveEvent extends ReceivedEventListener {
 
     @Override
     public void doEvent(GenericEvent genericEvent) {
-    	GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
+        GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
         if (!MusicCommonUtil.getInstance().isBotAlreadyConnectedToVoiceChannel()) {
-            MusicCommonUtil.getInstance().sendMusicBotNotConnectedMessage(event);
+            MusicCommonUtil.getInstance().sendMusicBotNotConnectedMessage(event.getChannel());
         } else if (!MusicCommonUtil.getInstance().isMemberConnectedToSameChannel(event.getMember())) {
-            MusicCommonUtil.getInstance().sendUserNotConnectedToSameChannelMessage(event);
+            MusicCommonUtil.getInstance().sendUserNotConnectedToSameChannelMessage(event.getChannel());
         } else {
-        	leaveVoiceChannel();
+            SongQueue.getInstance().resetQueue();
+            MusicPlayer.getInstance().getPlayer().stopTrack();
+            leaveVoiceChannel();
         }
     }
 

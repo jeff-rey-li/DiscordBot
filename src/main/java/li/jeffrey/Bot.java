@@ -1,6 +1,7 @@
 package li.jeffrey;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import li.jeffrey.events.*;
 import li.jeffrey.events.games.*;
@@ -35,6 +36,8 @@ public class Bot extends ListenerAdapter {
         jda.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
         jda.getPresence().setActivity(Activity.playing(prefix + "help"));
         addListeners();
+        TimeUnit.SECONDS.sleep(1);
+        JSONPlaylistReader.getInstance().readPreviousPlaylistsFile();
     }
 
     public static void addListeners() {
@@ -42,6 +45,7 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new Debug(myID, jda));
         jda.addEventListener(new VerifyEvent(jda, prefix));
         jda.addEventListener(new SpamPingEvent(jda, prefix));
+
         jda.addEventListener(new BanEvent(jda, prefix));
         jda.addEventListener(new ChatMuteEvent(jda, prefix));
         jda.addEventListener(new ChatUnmuteEvent(jda, prefix));
@@ -54,8 +58,8 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new UnlockChannelEvent(jda, prefix));
         jda.addEventListener(new VoiceMuteEvent(jda, prefix));
         jda.addEventListener(new VoiceUnmuteEvent(jda, prefix));
-//        jda.addEventListener(new MusicEvent(jda, prefix));
         jda.addEventListener(new KickMemberEvent(jda, prefix));
+
         jda.addEventListener(new HelpEvent(jda, prefix));
         jda.addEventListener(new JoinHomeworkEvent(jda, prefix));
         jda.addEventListener(new SongRequestEvent(jda, prefix));
@@ -68,9 +72,19 @@ public class Bot extends ListenerAdapter {
         jda.addEventListener(new LeaveEvent(jda, prefix));
         jda.addEventListener(new PlaySongEvent(jda, prefix));
         jda.addEventListener(new SongChoiceListener(jda, prefix));
+        jda.addEventListener(new SkipEvent(jda, prefix));
+        jda.addEventListener(new GetQueueEvent(jda, prefix));
+        jda.addEventListener(new RemoveSongEvent(jda, prefix));
+        jda.addEventListener(new ToggleShuffleEvent(jda, prefix));
+        jda.addEventListener(new ToggleRepeatEvent(jda, prefix));
+        jda.addEventListener(new SavePlaylistEvent(jda, prefix));
+        jda.addEventListener(new LoadPlaylistEvent(jda, prefix));
+        jda.addEventListener(new DeletePlaylistEvent(jda, prefix));
+        jda.addEventListener(new ViewPlaylistEvent(jda, prefix));
+        jda.addEventListener(new ViewAllPlaylistsEvent(jda, prefix));
     }
     
-    public static JDA getJda() {
+    public static JDA getJDA() {
     	return jda;
     }
 

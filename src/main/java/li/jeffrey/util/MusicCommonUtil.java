@@ -1,8 +1,11 @@
 package li.jeffrey.util;
 
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import li.jeffrey.events.music.MusicPlayer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -44,44 +47,70 @@ public class MusicCommonUtil {
         MusicPlayer.getInstance().getAudioManager().openAudioConnection(channel);
     }
 
-    public void sendMusicBotNotConnectedMessage(GuildMessageReceivedEvent event) {
+    public void sendMusicBotNotConnectedMessage(TextChannel channelToSendMessage) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED);
         eb.setDescription("I'm not connected to a channel!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
+        channelToSendMessage.sendMessage(eb.build()).queue();
     }
 
-    public void sendUserNotConnectedToSameChannelMessage(GuildMessageReceivedEvent event) {
+    public void sendUserNotConnectedToSameChannelMessage(TextChannel channelToSendMessage) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED);
         eb.setDescription("You must be connected to the same channel!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
+        channelToSendMessage.sendMessage(eb.build()).queue();
     }
 
-    public void sendUserMustConnectToVoiceChannelMessage(GuildMessageReceivedEvent event) {
+    public void sendUserMustConnectToVoiceChannelMessage(TextChannel channelToSendMessage) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED);
         eb.setDescription("You must be in a channel to play music!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
+        channelToSendMessage.sendMessage(eb.build()).queue();
     }
 
-    public void sendMusicBotAlreadyConnectedMessage(GuildMessageReceivedEvent event) {
+    public void sendMusicBotAlreadyConnectedMessage(TextChannel channelToSendMessage) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED);
         eb.setDescription("I'm already connected to a channel!");
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
+        channelToSendMessage.sendMessage(eb.build()).queue();
     }
 
-    public void sendBotJoinedChannelMessage(GuildMessageReceivedEvent event) {
+    public void sendBotJoinedChannelMessage(TextChannel channelToSendMessage, Member memberRequestingBot) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.YELLOW);
         eb.setTitle("Joined Voice Channel:");
-        eb.setDescription(musicCommonUtil.getMemberConnectedVoiceChannel(event.getMember()).getName());
-        eb.setFooter("Made by Jeffrey Li");
-        event.getChannel().sendMessage(eb.build()).queue();
+        eb.setDescription(musicCommonUtil.getMemberConnectedVoiceChannel(memberRequestingBot).getName());
+        channelToSendMessage.sendMessage(eb.build()).queue();
     }
+
+    public void sendNewSongQueuedMessage(AudioTrack song, Member memberRequestingSong, TextChannel channelToSendMessage) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(Color.GREEN);
+        String url = song.getInfo().uri;
+        String trackTitle = song.getInfo().title;
+        eb.setTitle("Queued Song");
+        String vidID = url;
+        vidID = vidID.substring(32);
+        if (song instanceof YoutubeAudioTrack) {
+            eb.setThumbnail("https://img.youtube.com/vi/" + vidID + "/sddefault.jpg");
+        }
+        eb.setDescription("[" + trackTitle + "](" + url + ")\nAdded by: " + memberRequestingSong.getAsMention());
+        if (MusicPlayer.getInstance().getPlayer().isPaused()) {
+            eb.addField("", "The player is currently paused. Do !play to contine playing music.", false);
+        }
+        channelToSendMessage.sendMessage(eb.build()).complete();
+    }
+
+    public void sendSongAlreadyInQueueMessage(AudioTrack song, TextChannel channelToSendMessage) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(Color.RED);
+        eb.setTitle("Error");
+        String url = song.getInfo().uri;
+        String trackTitle = song.getInfo().title;
+        String vidID = url;
+        vidID = vidID.substring(32);
+        eb.setDescription("This song is already in the queue!\n[" + trackTitle + "](" + url + ")");
+        channelToSendMessage.sendMessage(eb.build()).complete();
+    }
+
 }
