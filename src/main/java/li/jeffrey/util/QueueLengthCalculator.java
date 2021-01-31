@@ -30,9 +30,8 @@ public class QueueLengthCalculator {
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		stringBuilder.append(getHours(hours));
-		stringBuilder.append(minutes);
-		stringBuilder.append(":");
-		stringBuilder.append(seconds);
+		stringBuilder.append(getMinutes(minutes));
+		stringBuilder.append(getSeconds(seconds));
 		
 		return stringBuilder.toString();
 	}
@@ -40,8 +39,26 @@ public class QueueLengthCalculator {
 	private String getHours(long hours) {
 		if(hours == 0) {
 			return "";
-		} else {
+		} else if(hours < 10) {
+			return "0" + hours + ":";
+		}else {
 			return hours + ":";
+		}
+	}
+	
+	private String getSeconds(long seconds) {
+		if(seconds < 10) {
+			return "0" + seconds;
+		} else {
+			return "" + seconds;
+		}
+	}
+	
+	private String getMinutes(long minutes) {
+		if(minutes < 10) {
+			return "0" + minutes + ":";
+		} else {
+			return minutes + ":";
 		}
 	}
 }

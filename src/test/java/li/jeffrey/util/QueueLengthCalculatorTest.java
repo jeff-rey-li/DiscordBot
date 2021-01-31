@@ -64,4 +64,23 @@ public class QueueLengthCalculatorTest {
 		
 		assertEquals(length, "59:59");
 	}
+	
+	@Test
+	public void testCalculateQueueLengthWithHoursAndMinutesLessThan10() {
+		List<SongAddData> queue = new ArrayList<SongAddData>();
+		
+		SongAddData firstSongAddData = mock(SongAddData.class);
+		AudioTrack firstAudioTrack = mock(AudioTrack.class);
+		when(firstSongAddData.getSong()).thenReturn(firstAudioTrack);
+		when(firstAudioTrack.getDuration()).thenReturn(32949000l);
+		queue.add(firstSongAddData);
+		
+		QueueLengthCalculator queueLengthCalculator = new QueueLengthCalculator();
+		
+		long totalTime = queueLengthCalculator.calculateTotalQueueLength(queue);
+		
+		String length = queueLengthCalculator.convertTimeToString(totalTime);
+		
+		assertEquals(length, "09:09:09");
+	}
 }
