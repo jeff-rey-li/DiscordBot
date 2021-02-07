@@ -34,23 +34,35 @@ public class DeletePlaylistEvent extends ReceivedEventListener {
         eb.setDescription("The playlist **" + playlistName + "** was deleted successfully!");
         event.getChannel().sendMessage(eb.build()).queue();
     }
-
+    
+    private boolean playListIsNotSpecified(GenericEvent genericEvent) {
+    	return ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ").length == 1;
+    }
+    
+    private String extractPlaylistNameFromEvent(GenericEvent genericEvent) {
+    	return ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().replace(prefix +
+                        "deleteplaylist", "").trim();
+    }
+    
+    private boolean playListExists(String playlistName) {
+    	return SavedPlaylists.getInstance().getPlaylist(playlistName) != null;
+    }
+    
     @Override
     public void doEvent(GenericEvent genericEvent) {
-        if (((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ").length == 1) {
+        if (playListIsNotSpecified(genericEvent)) {
             sendSpecifyPlaylistNameMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
         }
-        String playlistName =
-                ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().replace(prefix +
-                        "deleteplaylist", "").trim();
-        if (SavedPlaylists.getInstance().getPlaylist(playlistName) == null) {
-            sendPlaylistDoesNotExistMessage((GuildMessageReceivedEvent) genericEvent);
-            return;
-        } else {
-            SavedPlaylists.getInstance().deletePlaylist(playlistName);
-            sendPlaylistDeletedSuccessfullyMessage((GuildMessageReceivedEvent) genericEvent, playlistName);
-            JSONPlaylistWriter.getInstance().savePlaylistsToJSON();
+        
+        else {
+        	String playlistName = extractPlaylistNameFromEvent(genericEvent);
+        	 if (playListExists(playlistName)) {
+        		 SavedPlaylists.getInstance().deletePlaylist(playlistName);
+                 sendPlaylistDeletedSuccessfullyMessage((GuildMessageReceivedEvent) genericEvent, playlistName);
+                 JSONPlaylistWriter.getInstance().savePlaylistsToJSON();
+             } else {
+            	 sendPlaylistDoesNotExistMessage((GuildMessageReceivedEvent) genericEvent);
+             }
         }
     }
 
